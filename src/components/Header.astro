@@ -1,0 +1,81 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-logo">
+      <span class="logo-symbol">⚡</span>
+      <span class="logo-text">Mi Portfolio</span>
+    </a>
+    <nav aria-label="Navegación principal">
+      <ul class="nav-list">
+        <li>
+          <a href="/" class:list={['nav-link', { active: currentPath === '/' }]}>
+            Inicio
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0.9rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .site-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .logo-symbol {
+    font-size: 1.3rem;
+  }
+
+  .logo-text {
+    letter-spacing: -0.02em;
+  }
+
+  .nav-list {
+    list-style: none;
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .nav-link {
+    color: var(--text-muted);
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    transition: color 0.15s, background 0.15s;
+    text-decoration: none;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--text);
+    background: var(--bg-surface-hover);
+    text-decoration: none;
+  }
+</style>
