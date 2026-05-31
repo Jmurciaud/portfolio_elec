@@ -38,8 +38,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
     {image && <meta property="og:image" content={image} />}
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Saltar al contenido</a>
     <Header />
-    <main>
+    <main id="main-content">
       <slot />
     </main>
     <Footer />
