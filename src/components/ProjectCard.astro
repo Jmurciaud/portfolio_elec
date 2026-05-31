@@ -1,0 +1,165 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  proyecto: CollectionEntry<'proyectos'>;
+}
+
+const { proyecto } = Astro.props;
+const { titulo, descripcion, categoria, tags, imagenPortada, destacado } = proyecto.data;
+const url = `/proyectos/${proyecto.id}`;
+const categoriaLabel = categoria === 'electronica' ? 'Electrónica' : 'Software';
+---
+
+<article class="project-card" data-category={categoria}>
+  <a href={url} class="card-link">
+    <div class="card-image">
+      {imagenPortada
+        ? <Image src={imagenPortada} alt={titulo} width={600} height={375} loading="lazy" />
+        : <div class="card-image-empty"><span>⚡</span></div>
+      }
+      <span class={`badge-cat badge-cat--${categoria}`}>{categoriaLabel}</span>
+      {destacado && <span class="badge-dest">★ Destacado</span>}
+    </div>
+    <div class="card-body">
+      <h2 class="card-title">{titulo}</h2>
+      <p class="card-desc">{descripcion}</p>
+      {tags.length > 0 && (
+        <ul class="card-tags" aria-label="Tags">
+          {tags.slice(0, 4).map(tag => <li class="tag">{tag}</li>)}
+        </ul>
+      )}
+    </div>
+  </a>
+</article>
+
+<style>
+  .project-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) * 1.5);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+
+  .project-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(99, 102, 241, 0.15);
+  }
+
+  .card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card-image {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--bg-surface-hover);
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  .project-card:hover .card-image img {
+    transform: scale(1.03);
+  }
+
+  .card-image-empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--text-muted);
+    background: var(--bg-surface-hover);
+  }
+
+  .badge-cat {
+    position: absolute;
+    bottom: 0.6rem;
+    left: 0.6rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-cat--electronica {
+    background: rgba(99, 102, 241, 0.85);
+    color: #fff;
+  }
+
+  .badge-cat--software {
+    background: rgba(16, 185, 129, 0.85);
+    color: #fff;
+  }
+
+  .badge-dest {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    padding: 0.2rem 0.55rem;
+    background: rgba(251, 191, 36, 0.9);
+    color: #1a1a00;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .card-body {
+    padding: 1.1rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: auto;
+    padding-top: 0.25rem;
+  }
+
+  .tag {
+    background: var(--tag-bg);
+    color: var(--text-muted);
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-family: monospace;
+  }
+</style>

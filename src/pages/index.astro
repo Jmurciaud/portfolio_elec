@@ -1,29 +1,146 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const proyectos = (await getCollection('proyectos')).sort((a, b) => {
+  if (a.data.destacado !== b.data.destacado) return a.data.destacado ? -1 : 1;
+  return b.data.fecha.getTime() - a.data.fecha.getTime();
+});
+
+const totalElectronica = proyectos.filter(p => p.data.categoria === 'electronica').length;
+const totalSoftware = proyectos.filter(p => p.data.categoria === 'software').length;
 ---
 
-<Layout title="Mi Portfolio">
+<Layout title="Mi Portfolio — Electrónica & Software">
   <section class="hero">
     <h1>Proyectos</h1>
     <p class="hero-sub">Electrónica y software — construyendo cosas que funcionan.</p>
   </section>
+
+  <div class="filters" role="group" aria-label="Filtrar proyectos">
+    <button class="filter-btn active" data-filter="todos">
+      Todos <span class="filter-count">{proyectos.length}</span>
+    </button>
+    <button class="filter-btn" data-filter="electronica">
+      Electrónica <span class="filter-count">{totalElectronica}</span>
+    </button>
+    <button class="filter-btn" data-filter="software">
+      Software <span class="filter-count">{totalSoftware}</span>
+    </button>
+  </div>
+
+  <div class="projects-grid" id="projects-grid">
+    {proyectos.map(proyecto => (
+      <ProjectCard proyecto={proyecto} />
+    ))}
+  </div>
+
+  <p class="empty-msg" id="empty-msg" hidden>
+    No hay proyectos en esta categoría todavía.
+  </p>
 </Layout>
 
 <style>
   .hero {
-    padding: 3rem 0 2rem;
+    padding: 2.5rem 0 2rem;
   }
 
   .hero h1 {
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 800;
-    color: var(--text);
   }
 
   .hero-sub {
-    margin-top: 0.75rem;
+    margin-top: 0.6rem;
     font-size: 1.1rem;
     color: var(--text-muted);
     max-width: 480px;
   }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .filter-btn.active .filter-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+  }
+
+  .filter-count {
+    background: var(--tag-bg);
+    color: var(--text-muted);
+    padding: 0.05rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-width: 1.5rem;
+    text-align: center;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .empty-msg {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 3rem 0;
+    font-size: 1rem;
+  }
 </style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-category]');
+  const emptyMsg = document.getElementById('empty-msg');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter!;
+
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      let visible = 0;
+      cards.forEach(card => {
+        const show = filter === 'todos' || card.dataset.category === filter;
+        card.hidden = !show;
+        if (show) visible++;
+      });
+
+      if (emptyMsg) emptyMsg.hidden = visible > 0;
+    });
+  });
+</script>
