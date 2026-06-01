@@ -1,12 +1,12 @@
 ---
+import logoWire from '../logos/logoWire1.png';
 const currentPath = Astro.url.pathname;
 ---
 
 <header class="site-header">
   <div class="header-inner">
     <a href={import.meta.env.BASE_URL} class="site-logo">
-      <span class="logo-symbol">⚡</span>
-      <span class="logo-text">Portfolio WIRE Ingeniería</span>
+      <img src={logoWire.src} alt="WIRE Ingeniería y Soluciones" class="logo-img" />
     </a>
     <nav aria-label="Navegación principal">
       <ul class="nav-list">
@@ -42,19 +42,12 @@ const currentPath = Astro.url.pathname;
   .site-logo {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--text);
     text-decoration: none;
   }
 
-  .logo-symbol {
-    font-size: 1.3rem;
-  }
-
-  .logo-text {
-    letter-spacing: -0.02em;
+  .logo-img {
+    height: 42px;
+    width: auto;
   }
 
   .nav-list {
@@ -80,8 +73,8 @@ const currentPath = Astro.url.pathname;
   }
 
   @media (max-width: 400px) {
-    .logo-text {
-      display: none;
+    .logo-img {
+      height: 32px;
     }
   }
 </style>
